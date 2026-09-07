@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UrbanLens AI — AI-Powered Urban Visual Intelligence Platform</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for technical icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#14532d',
+                        },
+                        gis: {
+                            dark: '#0f172a',
+                            card: '#1e293b',
+                            border: '#334155',
+                            accent: '#38bdf8'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar and GIS styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        .ai-overlay-box {
+            position: absolute;
+            border: 2px dashed rgba(56, 189, 248, 0.8);
+            background: rgba(56, 189, 248, 0.1);
+            transition: all 0.5s ease;
+        }
+        .ai-badge {
+            position: absolute;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(56, 189, 248, 0.5);
+            color: #38bdf8;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            backdrop-filter: blur(4px);
+        }
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: rgba(56, 189, 248, 0.5);
+            position: absolute;
+            animation: scan 3s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 0%; opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { top: 100%; opacity: 0.8; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-gis-dark text-slate-800 dark:text-slate-100 font-sans antialiased selection:bg-sky-500 selection:text-white transition-colors duration-300">
+
+    <!-- Navigation -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-gis-dark/90 backdrop-blur-md border-b border-slate-200 dark:border-gis-border transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-sky-400 to-emerald-500 flex items-center justify-center shadow-lg shadow-sky-500/20">
+                    <i class="fa-solid fa-earth-americas text-gis-dark text-xl font-bold"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">UrbanLens<span class="text-sky-500 dark:text-sky-400">.AI</span></span>
+                    <span class="block text-[10px] text-sky-600 dark:text-sky-400 font-mono tracking-widest uppercase">Visual Intelligence</span>
+                </div>
+            </div>
+            
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-600 dark:text-slate-300">
+                <a href="#platform" class="hover:text-sky-500 dark:hover:text-sky-400 transition-colors">Platform</a>
+                <a href="#uvi" class="hover:text-sky-500 dark:hover:text-sky-400 transition-colors">UVI Index</a>
+                <a href="#dimensions" class="hover:text-sky-500 dark:hover:text-sky-400 transition-colors">Dimensions</a>
+                <a href="#scale" class="hover:text-sky-500 dark:hover:text-sky-400 transition-colors">City Scale</a>
+                <a href="#heatmap" class="hover:text-sky-500 dark:hover:text-sky-400 transition-colors">Heatmap</a>
+                <a href="#usecases" class="hover:text-sky-500 dark:hover:text-sky-400 transition-colors">Use Cases</a>
+            </nav>
+
+            <div class="flex items-center space-x-3 sm:space-x-4">
+                <!-- Theme Toggle Button -->
+                <button onclick="toggleTheme()" class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-gis-border flex items-center justify-center text-slate-700 dark:text-sky-400 hover:scale-105 transition-all shadow-sm" title="Toggle Light/Dark Mode">
+                    <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
+                </button>
+
+                <button onclick="openDemoModal()" class="hidden sm:inline-flex items-center justify-center px-4 py-2 border border-sky-500/40 text-sm font-semibold rounded-lg text-sky-600 dark:text-sky-400 hover:bg-sky-500/10 transition-all">
+                    Request Demo
+                </button>
+                <button onclick="openUploadModal()" class="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-sky-500 to-emerald-500 text-sm font-semibold rounded-lg text-white dark:text-gis-dark hover:opacity-90 shadow-lg shadow-sky-500/25 transition-all">
+                    <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Analyze Image
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section with Auto-Sliding Banners & GIS Overlays -->
+    <section class="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden border-b border-slate-200 dark:border-gis-border transition-colors duration-300">
+        <div class="absolute inset-0 z-0 opacity-10 dark:opacity-20 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Left Content -->
+                <div class="lg:col-span-6 space-y-6">
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-600 dark:text-sky-400 text-xs font-mono">
+                        <i class="fa-solid fa-microchip animate-pulse"></i>
+                        <span>AI-Powered Urban Visual Intelligence Platform</span>
+                    </div>
+                    
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+                        See the City.<br>
+                        Measure the City.<br>
+                        <span class="bg-gradient-to-r from-sky-500 to-emerald-500 bg-clip-text text-transparent">Improve the City.</span>
+                    </h1>
+                    
+                    <p class="text-lg text-slate-600 dark:text-slate-300 max-w-xl font-normal leading-relaxed">
+                        UrbanLens transforms ordinary street-level images into measurable insights about the visual quality, character, and condition of urban environments using advanced computer vision.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 pt-2">
+                        <button onclick="openUploadModal()" class="px-6 py-3.5 bg-sky-500 hover:bg-sky-400 text-white dark:text-gis-dark font-bold rounded-xl shadow-lg shadow-sky-500/30 transition-all flex items-center justify-center space-x-2">
+                            <span>Analyze Your Urban Images</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                        <button onclick="openDemoModal()" class="px-6 py-3.5 bg-white dark:bg-gis-card hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-white font-semibold rounded-xl border border-slate-200 dark:border-gis-border transition-all flex items-center justify-center space-x-2 shadow-sm">
+                            <i class="fa-solid fa-play text-sky-500 dark:text-sky-400"></i>
+                            <span>Download Demo App</span>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4 pt-6 border-t border-slate-200 dark:border-gis-border font-mono text-xs text-slate-500 dark:text-slate-400">
+                        <div>
+                            <span class="block text-xl font-bold text-slate-900 dark:text-white">78.4</span>
+                            Avg UVI Score
+                        </div>
+                        <div>
+                            <span class="block text-xl font-bold text-sky-600 dark:text-sky-400">10M+</span>
+                            Images Analyzed
+                        </div>
+                        <div>
+                            <span class="block text-xl font-bold text-emerald-600 dark:text-emerald-400">99.2%</span>
+                            Detection Accuracy
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Hero Highlight Card -->
+                <div class="lg:col-span-6">
+                    <div class="relative rounded-2xl border border-slate-200 dark:border-gis-border bg-white dark:bg-gis-card p-8 sm:p-10 shadow-2xl overflow-hidden space-y-6">
+                        <div class="absolute inset-0 bg-gradient-to-br from-sky-500/10 via-transparent to-emerald-500/10 pointer-events-none"></div>
+                        
+                        <div class="flex items-center justify-between pb-6 border-b border-slate-200 dark:border-gis-border">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-500 dark:text-sky-400 text-xl font-bold shadow-lg">
+                                    <i class="fa-solid fa-satellite-dish"></i>
+                                </div>
+                                <div>
+                                    <span class="text-xs font-mono text-sky-600 dark:text-sky-400 uppercase tracking-widest">Real-time Telemetry</span>
+                                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">Urban Vision Core Engine</h3>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 rounded-full text-xs font-mono"><i class="fa-solid fa-circle text-[8px] animate-pulse mr-1.5"></i> ACTIVE</span>
+                        </div>
+
+                        <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                            UrbanLens continuously processes multidimensional street imagery using state-of-the-art vision models to evaluate public space quality, pedestrian infrastructure, and environmental canopy at municipal scale.
+                        </p>
+
+                        <div class="grid grid-cols-2 gap-4 font-mono text-xs">
+                            <div class="bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-gis-border p-4 rounded-xl">
+                                <span class="block text-slate-500 dark:text-slate-400 text-[10px]">Processing Speed</span>
+                                <span class="text-lg font-bold text-sky-600 dark:text-sky-400">45ms / frame</span>
+                            </div>
+                            <div class="bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-gis-border p-4 rounded-xl">
+                                <span class="block text-slate-500 dark:text-slate-400 text-[10px]">Spatial Resolution</span>
+                                <span class="text-lg font-bold text-emerald-600 dark:text-emerald-400">0.25m / pixel</span>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-gis-border">
+                            <span>API Status: 99.9% Uptime</span>
+                            <span class="text-sky-600 dark:text-sky-400 hover:underline cursor-pointer" onclick="openUploadModal()">Test API Stream <i class="fa-solid fa-arrow-right ml-1"></i></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW: Dedicated Interactive Banner Showcase Carousel -->
+    <section class="py-20 bg-slate-100/70 dark:bg-slate-950/70 border-b border-slate-200 dark:border-gis-border relative transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-sky-600 dark:text-sky-400 font-mono text-xs uppercase tracking-widest px-3 py-1 bg-sky-500/10 rounded-full border border-sky-500/25">Interactive Showcase</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-4">AI Vision Feed Showcase Banners</h2>
+                <p class="text-slate-600 dark:text-slate-400 mt-2 text-sm">Explore live automated inference screens across diverse urban typologies. Pause, navigate, and review computer vision metadata in real-time.</p>
+            </div>
+
+            <!-- Dedicated Carousel Wrapper -->
+            <div class="relative bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-3xl p-6 sm:p-8 shadow-2xl overflow-hidden max-w-5xl mx-auto transition-colors duration-300">
+                <div class="flex flex-col md:flex-row items-center justify-between pb-6 border-b border-slate-200 dark:border-gis-border mb-6 gap-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-500 dark:text-sky-400">
+                            <i class="fa-solid fa-layer-group text-lg"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-mono text-sky-600 dark:text-sky-400 uppercase tracking-widest">Multi-Environment Stream</span>
+                            <h3 id="showcaseTitle" class="text-lg font-bold text-slate-900 dark:text-white">Zone Alpha — Metropolitan Boulevard</h3>
+                        </div>
+                    </div>
+                    
+                    <!-- Carousel Controls -->
+                    <div class="flex items-center space-x-3">
+                        <button onclick="toggleShowcasePlay()" id="playPauseBtn" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-gis-border rounded-lg text-xs font-mono text-slate-700 dark:text-slate-300 hover:text-sky-500 dark:hover:text-sky-400 transition-colors flex items-center space-x-2">
+                            <i id="playPauseIcon" class="fa-solid fa-pause text-sky-500 dark:text-sky-400"></i>
+                            <span id="playPauseText">Pause Auto-Slide</span>
+                        </button>
+                        <div class="flex items-center space-x-1 border-l border-slate-200 dark:border-gis-border pl-3">
+                            <button onclick="prevShowcaseSlide()" class="w-9 h-9 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-gis-border rounded-lg text-slate-700 dark:text-slate-300 flex items-center justify-center transition-colors">
+                                <i class="fa-solid fa-chevron-left text-xs"></i>
+                            </button>
+                            <button onclick="nextShowcaseSlide()" class="w-9 h-9 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-gis-border rounded-lg text-slate-700 dark:text-slate-300 flex items-center justify-center transition-colors">
+                                <i class="fa-solid fa-chevron-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Showcase Banner Slides Container -->
+                <div class="relative h-[360px] sm:h-[440px] rounded-2xl overflow-hidden border border-slate-200 dark:border-gis-border">
+                    <!-- Showcase Slide 1 -->
+                    <div class="showcase-slide absolute inset-0 transition-all duration-700 opacity-150 flex flex-col justify-end p-6 sm:p-10" style="background: linear-gradient(to top, rgba(15,23,42,0.95), rgba(15,23,42,0.2)), url('https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=1200&q=80') center/cover;">
+                        <div class="relative z-10 max-w-xl space-y-3">
+                            <div class="inline-flex items-center space-x-2 px-2.5 py-1 rounded bg-sky-500/20 border border-sky-500/40 text-sky-300 font-mono text-xs">
+                                <i class="fa-solid fa-city"></i>
+                                <span>Metropolitan Core • UVI: 84.2</span>
+                            </div>
+                            <h4 class="text-2xl font-bold text-white">High-Density Urban Corridor Analysis</h4>
+                            <p class="text-xs text-slate-200">Advanced bounding box recognition of multi-story architectural facades, pedestrian flow volume, and active street furniture.</p>
+                            <div class="flex flex-wrap gap-2 pt-2 font-mono text-[11px]">
+                                <span class="px-2 py-1 bg-slate-900/80 rounded border border-slate-700 text-emerald-400">Greenery: 86%</span>
+                                <span class="px-2 py-1 bg-slate-900/80 rounded border border-slate-700 text-sky-400">Sidewalks: 91%</span>
+                                <span class="px-2 py-1 bg-slate-900/80 rounded border border-slate-700 text-yellow-400">Façade Score: 81%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Showcase Slide 2 -->
+                    <div class="showcase-slide absolute inset-0 transition-all duration-700 opacity-0 flex flex-col justify-end p-6 sm:p-10" style="background: linear-gradient(to top, rgba(15,23,42,0.95), rgba(15,23,42,0.2)), url('https://images.unsplash.com/photo-1477959858617-67f30bc47b82?auto=format&fit=crop&w=1200&q=80') center/cover;">
+                        <div class="relative z-10 max-w-xl space-y-3">
+                            <div class="inline-flex items-center space-x-2 px-2.5 py-1 rounded bg-yellow-500/20 border border-yellow-500/40 text-yellow-300 font-mono text-xs">
+                                <i class="fa-solid fa-road"></i>
+                                <span>Commercial District • UVI: 72.8</span>
+                            </div>
+                            <h4 class="text-2xl font-bold text-white">Commercial Streetscape & Lighting Audit</h4>
+                            <p class="text-xs text-slate-200">Continuous measurement of signage clutter, pavement wear index, night lighting coverage, and vehicular-pedestrian separation.</p>
+                            <div class="flex flex-wrap gap-2 pt-2 font-mono text-[11px]">
+                                <span class="px-2 py-1 bg-slate-900/80 rounded border border-slate-700 text-emerald-400">Greenery: 64%</span>
+                                <span class="px-2 py-1 bg-slate-900/80 rounded border border-slate-700 text-sky-400">Sidewalks: 74%</span>
+                                <span class="px-2 py-1 bg-slate-900/80 rounded border border-slate-700 text-yellow-400">Lighting: 88%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Showcase Slide 3 -->
+                    <div class="showcase-slide absolute inset-0 transition-all duration-700 opacity-0 flex flex-col justify-end p-6 sm:p-10" style="background: linear-gradient(to top, rgba(15,23,42,0.95), rgba(15,23,42,0.2)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80') center/cover;">
+                        <div class="relative z-10 max-w-xl space-y-3">
+                            <div class="inline-flex items-center space-x-2 px-2.5 py-1 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-mono text-xs">
+                                <i class="fa-solid fa-tree"></i>
+                                <span>Parkside Residential • UVI: 89.1</span>
+                            </div>
+                            <h4 class="text-2xl font-bold text-white">Green Canopy & Pedestrian Enclosure</h4>
+                            <p class="text-xs text-slate-200">High-precision segmentation of tree canopy percentage, sky-view factor, and human-scale street friendliness.</p>
+                            <div class="flex flex-wrap gap-2 pt-2 font-mono text-[11px]">
+                                <span class="px-2 py-1 bg-slate-900/80 rounded border border-slate-700 text-emerald-400">Canopy: 95%</span>
+                                <span class="px-2 py-1 bg-slate-900/80 rounded border border-slate-700 text-sky-400">Walkability: 92%</span>
+                                <span class="px-2 py-1 bg-slate-900/80 rounded border border-slate-700 text-emerald-400">Cleanliness: 90%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Showcase Indicators Footer -->
+                <div class="flex items-center justify-between pt-6 mt-6 border-t border-slate-200 dark:border-gis-border text-xs font-mono text-slate-500 dark:text-slate-400">
+                    <div class="flex items-center space-x-2">
+                        <span>Slide <span id="currentShowcaseNum" class="text-sky-600 dark:text-sky-400 font-bold">1</span> of 3</span>
+                    </div>
+                    <!-- Dots -->
+                    <div class="flex space-x-2" id="showcaseDots">
+                        <button onclick="goToOpenShowcase(0)" class="showcase-dot w-8 h-2 rounded-full bg-sky-500 dark:bg-sky-400 transition-all"></button>
+                        <button onclick="goToOpenShowcase(1)" class="showcase-dot w-2.5 h-2 rounded-full bg-slate-300 dark:bg-slate-700 transition-all"></button>
+                        <button onclick="goToOpenShowcase(2)" class="showcase-dot w-2.5 h-2 rounded-full bg-slate-300 dark:bg-slate-700 transition-all"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 01: Turn Images Into Urban Data -->
+    <section id="platform" class="py-24 bg-white/50 dark:bg-slate-950/50 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-sky-600 dark:text-sky-400 font-mono text-xs uppercase tracking-widest px-3 py-1 bg-sky-500/10 rounded-full border border-sky-500/20">01 — Core Methodology</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-4">Turn Images Into Urban Data</h2>
+                <p class="text-slate-600 dark:text-slate-400 mt-3 text-base">A photograph can tell you more than you think. Cities generate enormous amounts of visual information every day—UrbanLens uses AI to structure it.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-2xl p-6 lg:p-10 shadow-xl transition-colors duration-300">
+                <!-- Before Side -->
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-2 text-xs font-mono text-red-500 dark:text-red-400 uppercase">
+                        <i class="fa-solid fa-camera"></i>
+                        <span>From This: Raw Photograph</span>
+                    </div>
+                    <div class="relative rounded-xl overflow-hidden border border-slate-200 dark:border-gis-border h-64 sm:h-80">
+                        <img src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=800&q=80" alt="Raw Street Photo" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/800x600/1e293b/ef4444?text=Raw+Street+Photograph'">
+                        <div class="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur px-3 py-1 rounded text-xs font-mono text-slate-300">
+                            img_source_04928.jpg
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">An ordinary street-level photograph with unstructured visual information.</p>
+                </div>
+
+                <!-- After Side -->
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-2 text-xs font-mono text-emerald-600 dark:text-emerald-400 uppercase">
+                        <i class="fa-solid fa-square-poll-vertical"></i>
+                        <span>Into This: Structured Urban Insights</span>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900 border border-sky-500/30 rounded-xl p-5 font-mono space-y-3 h-64 sm:h-80 flex flex-col justify-center">
+                        <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-2">
+                            <span class="text-slate-600 dark:text-slate-400 text-sm">UVI Score</span>
+                            <span class="text-xl font-bold text-sky-600 dark:text-sky-400">78 / 100</span>
+                        </div>
+                        <div class="space-y-2 text-xs">
+                            <div>
+                                <div class="flex justify-between mb-1 text-slate-700 dark:text-slate-300"><span>🌳 Greenery</span><span>82</span></div>
+                                <div class="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden"><div class="bg-emerald-500 h-full" style="width: 82%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1 text-slate-700 dark:text-slate-300"><span>🚶 Walkability</span><span>74</span></div>
+                                <div class="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden"><div class="bg-sky-500 h-full" style="width: 74%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1 text-slate-700 dark:text-slate-300"><span>🏢 Building Quality</span><span>81</span></div>
+                                <div class="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden"><div class="bg-yellow-500 h-full" style="width: 81%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1 text-slate-700 dark:text-slate-300"><span>🧹 Cleanliness</span><span>69</span></div>
+                                <div class="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden"><div class="bg-orange-500 h-full" style="width: 69%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Instantly categorized multidimensional index ready for spatial analysis.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 02: Urban Visual Index -->
+    <section id="uvi" class="py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="text-sky-600 dark:text-sky-400 font-mono text-xs uppercase tracking-widest px-3 py-1 bg-sky-500/10 rounded-full border border-sky-500/20">02 — Standardized Framework</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Measure What People See.</h2>
+                    <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+                        UrbanLens introduces a visual framework for understanding how urban environments look and feel. The Urban Visual Index (UVI) aggregates multiple visual indicators into a standardized score.
+                    </p>
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-3 text-sm text-slate-600 dark:text-slate-300">
+                            <i class="fa-solid fa-circle-check text-sky-500 dark:text-sky-400"></i>
+                            <span>Consistent cross-district and cross-city benchmarking</span>
+                        </div>
+                        <div class="flex items-center space-x-3 text-sm text-slate-600 dark:text-slate-300">
+                            <i class="fa-solid fa-circle-check text-sky-500 dark:text-sky-400"></i>
+                            <span>Correlates directly with pedestrian safety and real estate value</span>
+                        </div>
+                        <div class="flex items-center space-x-3 text-sm text-slate-600 dark:text-slate-300">
+                            <i class="fa-solid fa-circle-check text-sky-500 dark:text-sky-400"></i>
+                            <span>Multidimensional scoring matching exact field segmentation models</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7">
+                    <div class="bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-2xl p-6 sm:p-8 shadow-2xl relative space-y-6 transition-colors duration-300">
+                        <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-gis-border">
+                            <div>
+                                <span class="text-xs font-mono text-slate-500 dark:text-slate-400 uppercase">Hasil Segmentasi &amp; Prediksi AI</span>
+                                <h3 class="text-2xl font-bold text-slate-900 dark:text-white">Skor Prediksi (Prediction Scores)</h3>
+                            </div>
+                            <span class="text-xs font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full"><i class="fa-solid fa-shield-halved mr-1"></i> VERIFIED MODEL</span>
+                        </div>
+
+                        <!-- Exact Screenshot Prediction Score Cards Matching UVI, Safety, Beauty, Comfort, GVI -->
+                        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                            <!-- UVI Card -->
+                            <div class="bg-lime-100 border border-lime-300 p-4 rounded-2xl text-center shadow-md flex flex-col justify-between transform hover:scale-105 transition-transform">
+                                <span class="text-xs font-bold text-lime-800 font-mono uppercase tracking-wider">UVI</span>
+                                <span class="text-2xl sm:text-3xl font-extrabold text-lime-900 font-mono my-2">1.00</span>
+                                <span class="text-[10px] text-lime-700 font-medium">Urban Visual Index</span>
+                            </div>
+
+                            <!-- Safety Card -->
+                            <div class="bg-purple-200 border border-purple-300 p-4 rounded-2xl text-center shadow-md flex flex-col justify-between transform hover:scale-105 transition-transform">
+                                <span class="text-xs font-bold text-purple-900 font-mono uppercase tracking-wider">Safety</span>
+                                <span class="text-2xl sm:text-3xl font-extrabold text-purple-950 font-mono my-2">0.53</span>
+                                <span class="text-[10px] text-purple-800 font-medium">Visual Safety</span>
+                            </div>
+
+                            <!-- Beauty Card -->
+                            <div class="bg-pink-200 border border-pink-300 p-4 rounded-2xl text-center shadow-md flex flex-col justify-between transform hover:scale-105 transition-transform">
+                                <span class="text-xs font-bold text-pink-900 font-mono uppercase tracking-wider">Beauty</span>
+                                <span class="text-2xl sm:text-3xl font-extrabold text-pink-950 font-mono my-2">0.55</span>
+                                <span class="text-[10px] text-pink-800 font-medium">Aesthetic Index</span>
+                            </div>
+
+                            <!-- Comfort Card -->
+                            <div class="bg-amber-100 border border-amber-300 p-4 rounded-2xl text-center shadow-md flex flex-col justify-between transform hover:scale-105 transition-transform">
+                                <span class="text-xs font-bold text-amber-900 font-mono uppercase tracking-wider">Comfort</span>
+                                <span class="text-2xl sm:text-3xl font-extrabold text-amber-950 font-mono my-2">0.89</span>
+                                <span class="text-[10px] text-amber-800 font-medium">Walk Comfort</span>
+                            </div>
+
+                            <!-- GVI Card -->
+                            <div class="bg-emerald-200 border border-emerald-300 p-4 rounded-2xl text-center shadow-md col-span-2 sm:col-span-1 flex flex-col justify-between transform hover:scale-105 transition-transform">
+                                <span class="text-xs font-bold text-emerald-900 font-mono uppercase tracking-wider">GVI</span>
+                                <span class="text-2xl sm:text-3xl font-extrabold text-emerald-950 font-mono my-2">0.45</span>
+                                <span class="text-[10px] text-emerald-800 font-medium">Green View Index</span>
+                            </div>
+                        </div>
+
+                        <!-- SHAP Factor (Faktor Pengaruh) Section Matching Screenshot -->
+                        <div class="bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-gis-border rounded-2xl p-5 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sm font-bold text-slate-900 dark:text-white font-mono flex items-center">
+                                    <i class="fa-solid fa-chart-bar text-sky-500 dark:text-sky-400 mr-2"></i> Faktor Pengaruh (SHAP Analysis)
+                                </h4>
+                                <span class="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/25">Faktor Positif</span>
+                            </div>
+
+                            <div class="space-y-3 font-mono text-xs">
+                                <!-- Factor 1 -->
+                                <div class="grid grid-cols-12 items-center gap-2">
+                                    <span class="col-span-5 text-slate-700 dark:text-slate-300 truncate">Cakupan Vegetasi</span>
+                                    <span class="col-span-2 text-emerald-600 dark:text-emerald-400 text-right">+ 0.11</span>
+                                    <div class="col-span-5 bg-slate-200 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden p-0.5">
+                                        <div class="bg-teal-500 h-full rounded-full" style="width: 35%"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Factor 2 -->
+                                <div class="grid grid-cols-12 items-center gap-2">
+                                    <span class="col-span-5 text-slate-700 dark:text-slate-300 truncate">Lebar Trotoar</span>
+                                    <span class="col-span-2 text-emerald-600 dark:text-emerald-400 text-right">+ 0.58</span>
+                                    <div class="col-span-5 bg-slate-200 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden p-0.5">
+                                        <div class="bg-teal-500 h-full rounded-full" style="width: 78%"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Factor 3 -->
+                                <div class="grid grid-cols-12 items-center gap-2">
+                                    <span class="col-span-5 text-slate-700 dark:text-slate-300 truncate">Keterbukaan Langit</span>
+                                    <span class="col-span-2 text-emerald-600 dark:text-emerald-400 text-right">+ 0.64</span>
+                                    <div class="col-span-5 bg-slate-200 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden p-0.5">
+                                        <div class="bg-teal-500 h-full rounded-full" style="width: 90%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 03: What Does UrbanLens See? -->
+    <section id="dimensions" class="py-24 bg-white/50 dark:bg-slate-950/50 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-sky-600 dark:text-sky-400 font-mono text-xs uppercase tracking-widest px-3 py-1 bg-sky-500/10 rounded-full border border-sky-500/20">03 — Multi-Dimensional AI</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-4">What Does UrbanLens See?</h2>
+                <p class="text-slate-600 dark:text-slate-400 mt-3 text-base">AI-powered visual analysis across multiple critical urban dimensions.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dimension 1 -->
+                <div class="bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-2xl p-6 hover:border-sky-500/50 transition-all group shadow-sm">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-tree"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Green & Environmental</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 mb-4">Detect and evaluate vegetation, tree canopy, green spaces, sky visibility, and environmental appearance.</p>
+                    <ul class="space-y-1.5 text-xs font-mono text-slate-700 dark:text-slate-300">
+                        <li><i class="fa-solid fa-chevron-right text-emerald-600 dark:text-emerald-400 mr-2 text-[10px]"></i>Vegetation density mapping</li>
+                        <li><i class="fa-solid fa-chevron-right text-emerald-600 dark:text-emerald-400 mr-2 text-[10px]"></i>Tree canopy coverage</li>
+                        <li><i class="fa-solid fa-chevron-right text-emerald-600 dark:text-emerald-400 mr-2 text-[10px]"></i>Sky-view factor calculation</li>
+                    </ul>
+                </div>
+
+                <!-- Dimension 2 -->
+                <div class="bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-2xl p-6 hover:border-sky-500/50 transition-all group shadow-sm">
+                    <div class="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-500 dark:text-sky-400 text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-person-walking"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Pedestrian Experience</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 mb-4">Analyze sidewalk presence, walkable space, pedestrian accessibility, street obstruction, and human scale.</p>
+                    <ul class="space-y-1.5 text-xs font-mono text-slate-700 dark:text-slate-300">
+                        <li><i class="fa-solid fa-chevron-right text-sky-500 dark:text-sky-400 mr-2 text-[10px]"></i>Sidewalk continuity index</li>
+                        <li><i class="fa-solid fa-chevron-right text-sky-500 dark:text-sky-400 mr-2 text-[10px]"></i>Barrier & obstruction detection</li>
+                        <li><i class="fa-solid fa-chevron-right text-sky-500 dark:text-sky-400 mr-2 text-[10px]"></i>Human-scale friendliness</li>
+                    </ul>
+                </div>
+
+                <!-- Dimension 3 -->
+                <div class="bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-2xl p-6 hover:border-sky-500/50 transition-all group shadow-sm">
+                    <div class="w-12 h-12 rounded-xl bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center text-yellow-600 dark:text-yellow-400 text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Built Environment</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 mb-4">Evaluate building façades, architectural condition, building density, diversity, and street enclosure.</p>
+                    <ul class="space-y-1.5 text-xs font-mono text-slate-700 dark:text-slate-300">
+                        <li><i class="fa-solid fa-chevron-right text-yellow-600 dark:text-yellow-400 mr-2 text-[10px]"></i>Façade condition scoring</li>
+                        <li><i class="fa-solid fa-chevron-right text-yellow-600 dark:text-yellow-400 mr-2 text-[10px]"></i>Architectural diversity index</li>
+                        <li><i class="fa-solid fa-chevron-right text-yellow-600 dark:text-yellow-400 mr-2 text-[10px]"></i>Street enclosure ratio</li>
+                    </ul>
+                </div>
+
+                <!-- Dimension 4 -->
+                <div class="bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-2xl p-6 hover:border-sky-500/50 transition-all group shadow-sm">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-600 dark:text-purple-400 text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-road"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Streetscape</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 mb-4">Identify roads, street furniture, signage, lighting, parking facilities, and utility infrastructure.</p>
+                    <ul class="space-y-1.5 text-xs font-mono text-slate-700 dark:text-slate-300">
+                        <li><i class="fa-solid fa-chevron-right text-purple-600 dark:text-purple-400 mr-2 text-[10px]"></i>Street furniture inventory</li>
+                        <li><i class="fa-solid fa-chevron-right text-purple-600 dark:text-purple-400 mr-2 text-[10px]"></i>Lighting adequacy assessment</li>
+                        <li><i class="fa-solid fa-chevron-right text-purple-600 dark:text-purple-400 mr-2 text-[10px]"></i>Signage clutter detection</li>
+                    </ul>
+                </div>
+
+                <!-- Dimension 5 -->
+                <div class="bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-2xl p-6 hover:border-sky-500/50 transition-all group shadow-sm">
+                    <div class="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-orange-600 dark:text-orange-400 text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-broom"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Cleanliness & Maintenance</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 mb-4">Assess visual indicators such as litter, road surface condition, infrastructure maintenance quality, and visual clutter.</p>
+                    <ul class="space-y-1.5 text-xs font-mono text-slate-700 dark:text-slate-300">
+                        <li><i class="fa-solid fa-chevron-right text-orange-600 dark:text-orange-400 mr-2 text-[10px]"></i>Litter & debris detection</li>
+                        <li><i class="fa-solid fa-chevron-right text-orange-600 dark:text-orange-400 mr-2 text-[10px]"></i>Pavement cracking & wear</li>
+                        <li><i class="fa-solid fa-chevron-right text-orange-600 dark:text-orange-400 mr-2 text-[10px]"></i>Graffiti & wear tracking</li>
+                    </ul>
+                </div>
+
+                <!-- Dimension 6 -->
+                <div class="bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-2xl p-6 hover:border-sky-500/50 transition-all group shadow-sm">
+                    <div class="w-12 h-12 rounded-xl bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-600 dark:text-pink-400 text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-palette"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Visual Character</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 mb-4">Understand color composition, visual complexity, streetscape coherence, overall attractiveness, and urban identity.</p>
+                    <ul class="space-y-1.5 text-xs font-mono text-slate-700 dark:text-slate-300">
+                        <li><i class="fa-solid fa-chevron-right text-pink-600 dark:text-pink-400 mr-2 text-[10px]"></i>Color harmony analysis</li>
+                        <li><i class="fa-solid fa-chevron-right text-pink-600 dark:text-pink-400 mr-2 text-[10px]"></i>Visual complexity metric</li>
+                        <li><i class="fa-solid fa-chevron-right text-pink-600 dark:text-pink-400 mr-2 text-[10px]"></i>Coherence scoring</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 04 & 05: From One Image to an Entire City & Heatmap -->
+    <section id="scale" class="py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-sky-600 dark:text-sky-400 font-mono text-xs uppercase tracking-widest px-3 py-1 bg-sky-500/10 rounded-full border border-sky-500/20">04 & 05 — Spatial Intelligence</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-4">From One Image to an Entire City</h2>
+                <p class="text-slate-600 dark:text-slate-400 mt-3 text-base">Turn urban observations into interactive spatial intelligence and heatmaps.</p>
+            </div>
+
+            <!-- Pipeline Breadcrumb -->
+            <div class="flex flex-wrap items-center justify-center gap-2 mb-16 font-mono text-xs">
+                <span class="px-3 py-2 bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-lg text-slate-800 dark:text-white shadow-sm"><i class="fa-solid fa-image text-sky-500 dark:text-sky-400 mr-1.5"></i> IMAGE</span>
+                <i class="fa-solid fa-arrow-right text-slate-400"></i>
+                <span class="px-3 py-2 bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-lg text-slate-800 dark:text-white shadow-sm"><i class="fa-solid fa-location-dot text-emerald-600 dark:text-emerald-400 mr-1.5"></i> LOCATION</span>
+                <i class="fa-solid fa-arrow-right text-slate-400"></i>
+                <span class="px-3 py-2 bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-lg text-slate-800 dark:text-white shadow-sm"><i class="fa-solid fa-road text-yellow-600 dark:text-yellow-400 mr-1.5"></i> STREET</span>
+                <i class="fa-solid fa-arrow-right text-slate-400"></i>
+                <span class="px-3 py-2 bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-lg text-slate-800 dark:text-white shadow-sm"><i class="fa-solid fa-map text-purple-600 dark:text-purple-400 mr-1.5"></i> NEIGHBORHOOD</span>
+                <i class="fa-solid fa-arrow-right text-slate-400"></i>
+                <span class="px-3 py-2 bg-sky-500 text-white font-bold rounded-lg shadow"><i class="fa-solid fa-city mr-1.5"></i> CITY MAP</span>
+            </div>
+
+            <!-- Simulated GIS Heatmap Board -->
+            <div id="heatmap" class="bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-2xl p-6 lg:p-8 shadow-2xl transition-colors duration-300">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-slate-200 dark:border-gis-border mb-6 gap-4">
+                    <div>
+                        <span class="text-xs font-mono text-sky-600 dark:text-sky-400 uppercase">GIS Visualization Layer</span>
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Urban Visual Quality Heatmap — Metropolitan Sector A</h3>
+                    </div>
+                    <div class="flex items-center space-x-3 text-xs font-mono">
+                        <span class="flex items-center text-emerald-600 dark:text-emerald-400"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block mr-1"></span> High Quality (&gt;80)</span>
+                        <span class="flex items-center text-yellow-600 dark:text-yellow-400"><span class="w-3 h-3 rounded-full bg-yellow-500 inline-block mr-1"></span> Moderate (60-80)</span>
+                        <span class="flex items-center text-red-600 dark:text-red-400"><span class="w-3 h-3 rounded-full bg-red-500 inline-block mr-1"></span> Action Needed (&lt;60)</span>
+                    </div>
+                </div>
+
+                <!-- Grid Heatmap Simulation -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono text-center">
+                    <div class="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-500/30 p-6 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-all cursor-pointer shadow-sm" onclick="showHeatmapDetail('District 1 North', 84, 'Good condition, high canopy coverage.')">
+                        <span class="text-xs text-emerald-700 dark:text-emerald-400 uppercase">Zone 01-N</span>
+                        <span class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">84</span>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400">🟢 High Visual Quality</span>
+                    </div>
+
+                    <div class="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-500/30 p-6 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-all cursor-pointer shadow-sm" onclick="showHeatmapDetail('District 2 Financial', 81, 'Modern architecture, excellent lighting.')">
+                        <span class="text-xs text-emerald-700 dark:text-emerald-400 uppercase">Zone 02-FIN</span>
+                        <span class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">81</span>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400">🟢 High Visual Quality</span>
+                    </div>
+
+                    <div class="bg-yellow-50 dark:bg-yellow-950/40 border border-yellow-300 dark:border-yellow-500/30 p-6 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-yellow-100 dark:hover:bg-yellow-900/40 transition-all cursor-pointer shadow-sm" onclick="showHeatmapDetail('District 3 Midtown', 73, 'Moderate pedestrian obstruction detected.')">
+                        <span class="text-xs text-yellow-700 dark:text-yellow-400 uppercase">Zone 03-MID</span>
+                        <span class="text-3xl font-extrabold text-yellow-600 dark:text-yellow-400">73</span>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400">🟡 Areas to Improve</span>
+                    </div>
+
+                    <div class="bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-500/30 p-6 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-red-100 dark:hover:bg-red-900/40 transition-all cursor-pointer shadow-sm" onclick="showHeatmapDetail('District 4 Industrial Edge', 48, 'High visual clutter, poor sidewalk condition.')">
+                        <span class="text-xs text-red-700 dark:text-red-400 uppercase">Zone 04-IND</span>
+                        <span class="text-3xl font-extrabold text-red-600 dark:text-red-400">48</span>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400">🔴 Visual Hotspot</span>
+                    </div>
+
+                    <div class="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-500/30 p-6 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-all cursor-pointer shadow-sm" onclick="showHeatmapDetail('District 5 Parkside', 86, 'Exceptional environmental greenery.')">
+                        <span class="text-xs text-emerald-700 dark:text-emerald-400 uppercase">Zone 05-PARK</span>
+                        <span class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">86</span>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400">🟢 High Visual Quality</span>
+                    </div>
+
+                    <div class="bg-yellow-50 dark:bg-yellow-950/40 border border-yellow-300 dark:border-yellow-500/30 p-6 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-yellow-100 dark:hover:bg-yellow-900/40 transition-all cursor-pointer shadow-sm" onclick="showHeatmapDetail('District 6 Commercial Hub', 68, 'Signage clutter and aging facades.')">
+                        <span class="text-xs text-yellow-700 dark:text-yellow-400 uppercase">Zone 06-COM</span>
+                        <span class="text-3xl font-extrabold text-yellow-600 dark:text-yellow-400">68</span>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400">🟡 Areas to Improve</span>
+                    </div>
+
+                    <div class="bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-500/30 p-6 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-red-100 dark:hover:bg-red-900/40 transition-all cursor-pointer shadow-sm" onclick="showHeatmapDetail('District 7 Old Port', 52, 'Deteriorated road and infrastructure.')">
+                        <span class="text-xs text-red-700 dark:text-red-400 uppercase">Zone 07-PORT</span>
+                        <span class="text-3xl font-extrabold text-red-600 dark:text-red-400">52</span>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400">🔴 Visual Hotspot</span>
+                    </div>
+
+                    <div class="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-500/30 p-6 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-all cursor-pointer shadow-sm" onclick="showHeatmapDetail('District 8 Metro West', 89, 'Newly regenerated public plaza.')">
+                        <span class="text-xs text-emerald-700 dark:text-emerald-400 uppercase">Zone 08-WEST</span>
+                        <span class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">89</span>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400">🟢 High Visual Quality</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 06: Compare Places Objectively -->
+    <section class="py-24 bg-white/50 dark:bg-slate-950/50 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-sky-600 dark:text-sky-400 font-mono text-xs uppercase tracking-widest px-3 py-1 bg-sky-500/10 rounded-full border border-sky-500/20">06 — Cross-Benchmarking</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-4">Compare Places Objectively</h2>
+                <p class="text-slate-600 dark:text-slate-400 mt-3 text-base">Same methodology. Different places. Enable consistent visual benchmarking across locations and time periods.</p>
+            </div>
+
+            <div class="bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-2xl overflow-hidden shadow-xl transition-colors duration-300">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse font-mono text-sm">
+                        <thead>
+                            <tr class="bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-gis-border text-slate-600 dark:text-slate-400 text-xs uppercase">
+                                <th class="p-4 sm:p-5">Area / District</th>
+                                <th class="p-4 sm:p-5">UVI Score</th>
+                                <th class="p-4 sm:p-5">Greenery</th>
+                                <th class="p-4 sm:p-5">Walkability</th>
+                                <th class="p-4 sm:p-5">Streetscape</th>
+                                <th class="p-4 sm:p-5 text-right">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 dark:divide-gis-border text-slate-700 dark:text-slate-300">
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                                <td class="p-4 sm:p-5 font-semibold text-slate-900 dark:text-white flex items-center space-x-2">
+                                    <i class="fa-solid fa-map-pin text-sky-500 dark:text-sky-400"></i>
+                                    <span>District A (Downtown Core)</span>
+                                </td>
+                                <td class="p-4 sm:p-5 font-bold text-sky-600 dark:text-sky-400 text-base">84</td>
+                                <td class="p-4 sm:p-5 text-emerald-600 dark:text-emerald-400">91</td>
+                                <td class="p-4 sm:p-5 text-sky-600 dark:text-sky-400">82</td>
+                                <td class="p-4 sm:p-5 text-purple-600 dark:text-purple-400">85</td>
+                                <td class="p-4 sm:p-5 text-right"><span class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs">Optimized</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                                <td class="p-4 sm:p-5 font-semibold text-slate-900 dark:text-white flex items-center space-x-2">
+                                    <i class="fa-solid fa-map-pin text-yellow-500 dark:text-yellow-400"></i>
+                                    <span>District B (Mid-City Residential)</span>
+                                </td>
+                                <td class="p-4 sm:p-5 font-bold text-yellow-600 dark:text-yellow-400 text-base">76</td>
+                                <td class="p-4 sm:p-5 text-emerald-600 dark:text-emerald-400">72</td>
+                                <td class="p-4 sm:p-5 text-sky-600 dark:text-sky-400">81</td>
+                                <td class="p-4 sm:p-5 text-purple-600 dark:text-purple-400">75</td>
+                                <td class="p-4 sm:p-5 text-right"><span class="px-2.5 py-1 rounded-full bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 text-xs">Stable</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                                <td class="p-4 sm:p-5 font-semibold text-slate-900 dark:text-white flex items-center space-x-2">
+                                    <i class="fa-solid fa-map-pin text-red-500 dark:text-red-400"></i>
+                                    <span>District C (Industrial Fringe)</span>
+                                </td>
+                                <td class="p-4 sm:p-5 font-bold text-red-600 dark:text-red-400 text-base">61</td>
+                                <td class="p-4 sm:p-5 text-emerald-600 dark:text-emerald-400">55</td>
+                                <td class="p-4 sm:p-5 text-sky-600 dark:text-sky-400">63</td>
+                                <td class="p-4 sm:p-5 text-purple-600 dark:text-purple-400">64</td>
+                                <td class="p-4 sm:p-5 text-right"><span class="px-2.5 py-1 rounded-full bg-red-500/20 text-red-700 dark:text-red-400 text-xs">Needs Intervention</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 07 & 08: Track Urban Change & Built for Urban Professionals -->
+    <section id="usecases" class="py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-sky-600 dark:text-sky-400 font-mono text-xs uppercase tracking-widest px-3 py-1 bg-sky-500/10 rounded-full border border-sky-500/20">07 & 08 — Monitoring & Professionals</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-4">Built for Urban Professionals</h2>
+                <p class="text-slate-600 dark:text-slate-400 mt-3 text-base">Track longitudinal change and empower urban planners, governments, and researchers with AI.</p>
+            </div>
+
+            <!-- Professional Use Cases Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+                <div class="bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-2xl p-6 shadow-sm">
+                    <div class="text-2xl text-sky-500 dark:text-sky-400 mb-3"><i class="fa-solid fa-city"></i></div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Urban Planners</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400">Understand visual conditions across neighborhoods and identify priority areas for regeneration.</p>
+                </div>
+                <div class="bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-2xl p-6 shadow-sm">
+                    <div class="text-2xl text-emerald-600 dark:text-emerald-400 mb-3"><i class="fa-solid fa-landmark"></i></div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Government & Authorities</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400">Monitor urban quality at scale and evaluate development programs objectively.</p>
+                </div>
+                <div class="bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-2xl p-6 shadow-sm">
+                    <div class="text-2xl text-yellow-600 dark:text-yellow-400 mb-3"><i class="fa-solid fa-building-shield"></i></div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Property Developers</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400">Understand the visual context and environmental quality surrounding potential developments.</p>
+                </div>
+                <div class="bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-2xl p-6 shadow-sm">
+                    <div class="text-2xl text-purple-600 dark:text-purple-400 mb-3"><i class="fa-solid fa-graduation-cap"></i></div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Researchers</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400">Generate structured datasets for urban design, environmental psychology, and geography research.</p>
+                </div>
+                <div class="bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-2xl p-6 shadow-sm">
+                    <div class="text-2xl text-pink-600 dark:text-pink-400 mb-3"><i class="fa-solid fa-briefcase"></i></div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Consultants</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400">Create visual benchmarks and evidence-based urban assessments for municipal clients.</p>
+                </div>
+                <div class="bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-2xl p-6 shadow-sm">
+                    <div class="text-2xl text-orange-600 dark:text-orange-400 mb-3"><i class="fa-solid fa-users-rectangle"></i></div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Community & Placemaking</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400">Understand how public spaces are experienced visually by residents and pedestrians.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 09, 10 & 11: How It Works & Final CTA -->
+    <section class="py-24 bg-slate-100/80 dark:bg-slate-950/80 border-t border-slate-200 dark:border-gis-border transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-sky-600 dark:text-sky-400 font-mono text-xs uppercase tracking-widest px-3 py-1 bg-sky-500/10 rounded-full border border-sky-500/20">09 & 10 — Workflow & AI Philosophy</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-4">AI Doesn't Replace Urban Experts</h2>
+                <p class="text-slate-600 dark:text-slate-400 mt-3 text-base">It gives them a better lens. AI sees the pattern. Humans decide what it means.</p>
+            </div>
+
+            <!-- 3 Steps -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 font-mono">
+                <div class="bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-2xl p-8 text-center space-y-4 shadow-sm">
+                    <span class="text-sky-600 dark:text-sky-400 text-3xl font-bold">01</span>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white font-sans">Upload</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 font-sans">Upload street-level images from smartphones, street view cameras, or geospatial datasets.</p>
+                </div>
+                <div class="bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-2xl p-8 text-center space-y-4 shadow-sm">
+                    <span class="text-sky-600 dark:text-sky-400 text-3xl font-bold">02</span>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white font-sans">Analyze</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 font-sans">UrbanLens AI identifies and evaluates visual characteristics across all urban dimensions instantly.</p>
+                </div>
+                <div class="bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-2xl p-8 text-center space-y-4 shadow-sm">
+                    <span class="text-sky-600 dark:text-sky-400 text-3xl font-bold">03</span>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white font-sans">Understand</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 font-sans">Receive UVI scores, visual indicators, AI heatmaps, spatial insights, and comparative reports.</p>
+                </div>
+            </div>
+
+            <!-- Final CTA Banner -->
+            <div class="bg-gradient-to-r from-sky-50 dark:from-sky-900/40 via-white dark:via-gis-card to-emerald-50 dark:to-emerald-950/40 border border-sky-500/30 rounded-3xl p-8 lg:p-14 text-center relative overflow-hidden shadow-2xl transition-colors duration-300">
+                <div class="absolute inset-0 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:24px_24px] opacity-10"></div>
+                
+                <div class="relative z-10 max-w-2xl mx-auto space-y-6">
+                    <span class="text-sky-600 dark:text-sky-400 font-mono text-xs uppercase tracking-widest px-3 py-1 bg-sky-500/10 rounded-full border border-sky-500/20">11 — Your City, Visualized</span>
+                    <h2 class="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white">What does your city look like through data?</h2>
+                    <p class="text-slate-600 dark:text-slate-300 text-base">No complex GIS workflow. No manual scoring. Just an image and a better way to see the city.</p>
+                    
+                    <div class="flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
+                        <button onclick="openUploadModal()" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-sky-500 to-emerald-500 text-white dark:text-gis-dark font-bold rounded-xl shadow-xl hover:opacity-90 transition-all flex items-center justify-center space-x-2">
+                            <span>Try UrbanLens Now</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                        <button onclick="openDemoModal()" class="w-full sm:w-auto px-8 py-4 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-white font-semibold rounded-xl border border-slate-200 dark:border-gis-border transition-all flex items-center justify-center space-x-2 shadow-sm">
+                            <i class="fa-solid fa-envelope-open-text text-sky-500 dark:text-sky-400"></i>
+                            <span>Request a Demo</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 dark:bg-slate-950 border-t border-slate-800 dark:border-gis-border py-12 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-lg bg-sky-400 flex items-center justify-center text-gis-dark font-bold">
+                    <i class="fa-solid fa-earth-americas"></i>
+                </div>
+                <div>
+                    <span class="text-lg font-bold text-white">UrbanLens<span class="text-sky-400">.AI</span></span>
+                    <span class="block text-[10px] text-slate-400">See the City Differently.</span>
+                </div>
+            </div>
+            
+            <p class="text-xs text-slate-400 font-mono text-center">
+                &copy; 2026 UrbanLens AI Platform. All rights reserved. Built for Urban Visual Intelligence.
+            </p>
+
+            <div class="flex items-center space-x-6 text-slate-400 text-sm">
+                <a href="#platform" class="hover:text-sky-400"><i class="fa-brands fa-github"></i></a>
+                <a href="#platform" class="hover:text-sky-400"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#platform" class="hover:text-sky-400"><i class="fa-brands fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Upload Modal -->
+    <div id="uploadModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden">
+        <div class="bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-2xl w-full max-w-lg p-6 sm:p-8 m-4 relative shadow-2xl">
+            <button onclick="closeUploadModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-200"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-500 dark:text-sky-400 text-xl mx-auto mb-3">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Analyze Urban Image</h3>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Upload a street-level photograph for instant AI UVI evaluation.</p>
+            </div>
+            
+            <div class="border-2 border-dashed border-slate-300 dark:border-gis-border hover:border-sky-500 rounded-xl p-8 text-center cursor-pointer transition-colors bg-slate-50 dark:bg-slate-900/40" onclick="simulateUpload()">
+                <i class="fa-solid fa-image text-3xl text-sky-500 dark:text-sky-400 mb-2"></i>
+                <span class="block text-sm text-slate-700 dark:text-slate-300 font-medium">Click to browse or drop image here</span>
+                <span class="block text-[10px] text-slate-500 dark:text-slate-500 font-mono mt-1">Supports JPG, PNG, WEBP (Max 25MB)</span>
+            </div>
+
+            <div id="uploadResult" class="mt-6 hidden bg-slate-100 dark:bg-slate-900 p-4 rounded-xl border border-sky-500/30 font-mono text-xs space-y-2">
+                <div class="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>AI Analysis Complete!</span>
+                </div>
+                <div class="flex justify-between text-slate-700 dark:text-slate-300"><span>UVI Score:</span><span class="text-sky-600 dark:text-sky-400 font-bold">81.5 / 100 (Good)</span></div>
+                <div class="flex justify-between text-slate-700 dark:text-slate-300"><span>Greenery:</span><span class="text-emerald-600 dark:text-emerald-400">85</span></div>
+                <div class="flex justify-between text-slate-700 dark:text-slate-300"><span>Walkability:</span><span class="text-sky-600 dark:text-sky-400">79</span></div>
+            </div>
+
+            <div class="mt-6 flex justify-end space-x-3">
+                <button onclick="closeUploadModal()" class="px-4 py-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-semibold">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Request Demo Modal -->
+    <div id="demoModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden">
+        <div class="bg-white dark:bg-gis-card border border-slate-200 dark:border-gis-border rounded-2xl w-full max-w-md p-6 sm:p-8 m-4 relative shadow-2xl">
+            <button onclick="closeDemoModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-200"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Request UrbanLens Demo</h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mb-6">Experience our enterprise GIS dashboard and API access.</p>
+            
+            <form onsubmit="submitDemo(event)" class="space-y-4 text-xs font-mono">
+                <div>
+                    <label class="block text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
+                    <input type="text" required class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-gis-border rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:border-sky-500 outline-none" placeholder="Jane Doe">
+                </div>
+                <div>
+                    <label class="block text-slate-700 dark:text-slate-300 mb-1">Professional Email</label>
+                    <input type="email" required class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-gis-border rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:border-sky-500 outline-none" placeholder="jane@cityplanning.gov">
+                </div>
+                <div>
+                    <label class="block text-slate-700 dark:text-slate-300 mb-1">Organization / Municipality</label>
+                    <input type="text" required class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-gis-border rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:border-sky-500 outline-none" placeholder="City Department of Urban Planning">
+                </div>
+                <button type="submit" class="w-full py-3 bg-sky-500 hover:bg-sky-400 text-white font-bold rounded-lg shadow-lg transition-all mt-4 font-sans text-sm">
+                    Submit Demo Request
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 border border-sky-500/40 text-white px-5 py-3 rounded-xl shadow-2xl transform translate-y-32 transition-all duration-300 flex items-center space-x-3 font-mono text-xs">
+        <i class="fa-solid fa-circle-info text-sky-400 text-base"></i>
+        <span id="toastText">Notification message</span>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Theme Toggle Controller
+        function toggleTheme() {
+            const htmlEl = document.documentElement;
+            const themeIcon = document.getElementById('themeIcon');
+            if (htmlEl.classList.contains('dark')) {
+                htmlEl.classList.remove('dark');
+                themeIcon.className = "fa-solid fa-moon text-sm";
+                localStorage.setItem('urbanlens_theme', 'light');
+                showToast('Switched to Light Mode');
+            } else {
+                htmlEl.classList.add('dark');
+                themeIcon.className = "fa-solid fa-sun text-sm text-amber-400";
+                localStorage.setItem('urbanlens_theme', 'dark');
+                showToast('Switched to Dark Mode');
+            }
+        }
+
+        // Initialize Theme from Storage or System
+        (function() {
+            const savedTheme = localStorage.getItem('urbanlens_theme');
+            const themeIcon = document.getElementById('themeIcon');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                if (themeIcon) themeIcon.className = "fa-solid fa-sun text-sm text-amber-400";
+            } else {
+                document.documentElement.classList.remove('dark');
+                if (themeIcon) themeIcon.className = "fa-solid fa-moon text-sm";
+            }
+        })();
+
+        // Dedicated Showcase Carousel Controller
+        let showcaseIndex = 0;
+        const showcaseSlides = document.querySelectorAll('.showcase-slide');
+        const showcaseDots = document.querySelectorAll('.showcase-dot');
+        const showcaseTitleEl = document.getElementById('showcaseTitle');
+        const currentShowcaseNumEl = document.getElementById('currentShowcaseNum');
+        const showcaseTitles = [
+            "Zone Alpha — Metropolitan Boulevard",
+            "Zone Beta — Commercial Streetscape",
+            "Zone Gamma — Parkside Residential"
+        ];
+        let showcaseInterval = setInterval(nextShowcaseSlide, 6000);
+        let isShowcasePlaying = true;
+
+        function updateShowcase(index) {
+            showcaseSlides.forEach((slide, i) => {
+                slide.style.opacity = i === index ? '1' : '0';
+                slide.style.pointerEvents = i === index ? 'auto' : 'none';
+            });
+            showcaseDots.forEach((dot, i) => {
+                if (i === index) {
+                    dot.classList.remove('w-2.5', 'bg-slate-300', 'dark:bg-slate-700');
+                    dot.classList.add('w-8', 'bg-sky-500', 'dark:bg-sky-400');
+                } else {
+                    dot.classList.remove('w-8', 'bg-sky-500', 'dark:bg-sky-400');
+                    dot.classList.add('w-2.5', 'bg-slate-300', 'dark:bg-slate-700');
+                }
+            });
+            if (showcaseTitleEl) showcaseTitleEl.innerText = showcaseTitles[index];
+            if (currentShowcaseNumEl) currentShowcaseNumEl.innerText = index + 1;
+        }
+
+        function nextShowcaseSlide() {
+            showcaseIndex = (showcaseIndex + 1) % showcaseSlides.length;
+            updateShowcase(showcaseIndex);
+        }
+
+        function prevShowcaseSlide() {
+            showcaseIndex = (showcaseIndex - 1 + showcaseSlides.length) % showcaseSlides.length;
+            updateShowcase(showcaseIndex);
+        }
+
+        function goToOpenShowcase(index) {
+            showcaseIndex = index;
+            updateShowcase(showcaseIndex);
+        }
+
+        function toggleShowcasePlay() {
+            const icon = document.getElementById('playPauseIcon');
+            const text = document.getElementById('playPauseText');
+            if (isShowcasePlaying) {
+                clearInterval(showcaseInterval);
+                icon.className = "fa-solid fa-play text-sky-500 dark:text-sky-400";
+                text.innerText = "Resume Auto-Slide";
+                isShowcasePlaying = false;
+                showToast('Showcase carousel paused');
+            } else {
+                showcaseInterval = setInterval(nextShowcaseSlide, 6000);
+                icon.className = "fa-solid fa-pause text-sky-500 dark:text-sky-400";
+                text.innerText = "Pause Auto-Slide";
+                isShowcasePlaying = true;
+                showToast('Showcase carousel resumed');
+            }
+        }
+
+        // Modal Controls
+        function openUploadModal() {
+            document.getElementById('uploadModal').classList.remove('hidden');
+        }
+        function closeUploadModal() {
+            document.getElementById('uploadModal').classList.add('hidden');
+            document.getElementById('uploadResult').classList.add('hidden');
+        }
+        function openDemoModal() {
+            document.getElementById('demoModal').classList.remove('hidden');
+        }
+        function closeDemoModal() {
+            document.getElementById('demoModal').classList.add('hidden');
+        }
+
+        // Simulate Image Upload
+        function simulateUpload() {
+            const res = document.getElementById('uploadResult');
+            res.classList.remove('hidden');
+            showToast('AI Model successfully extracted UVI score (81.5)');
+        }
+
+        // Heatmap Click Handler
+        function showHeatmapDetail(zone, score, desc) {
+            showToast(`${zone} — UVI Score: ${score}/100. Note: ${desc}`);
+        }
+
+        // Demo Form Submission
+        function submitDemo(e) {
+            e.preventDefault();
+            closeDemoModal();
+            showToast('Demo request received! Our spatial intelligence team will contact you.');
+        }
+
+        // Toast Notification System
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toastText');
+            toastText.innerText = message;
+            toast.classList.remove('translate-y-32');
+            setTimeout(() => {
+                toast.classList.add('translate-y-32');
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
