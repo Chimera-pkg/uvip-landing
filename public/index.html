@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#051d35">
+  <meta name="description" content="UrbanLens AI membantu Anda memahami kualitas visual kota melalui aplikasi Android, segmentasi foto dan video, analisis UVI, heatmap, rekomendasi AI, ekspor laporan PDF, dan dataset CSV dalam satu dashboard.">
+  <title>UrbanLens AI — Lihat kota. Pahami potensinya.</title>
+  <link rel="icon" data-image="favicon">
+  <link rel="stylesheet" href="assets/css/fonts.css">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <!-- Config dibaca sebelum seluruh interaksi halaman. -->
+  <script src="config/site-config.js" defer></script>
+  <script src="assets/js/site.js" defer></script>
+  <script src="assets/js/shared.js" defer></script>
+  <script src="data/dashboard-modules.js" defer></script>
+  <script src="assets/js/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Langsung ke konten</a>
+<header class="header">
+  <div class="container nav-wrap">
+    <a class="brand" href="#" aria-label="UrbanLens AI beranda"><span class="brand-mark official-mark" aria-hidden="true"></span><span>UrbanLens<span class="brand-ai">AI</span><small>URBAN VISUAL INTELLIGENCE</small></span></a>
+    <nav class="desktop-nav" aria-label="Navigasi utama"><a href="#platform">Platform</a><a href="#android">Aplikasi Android</a><a href="#recommendation">Rekomendasi AI</a><a href="#dashboard">Dashboard</a><a href="kredit/">Kredit</a></nav>
+    <div class="header-actions"><a class="button button-small" data-link="downloadApp" href="https://drive.google.com/drive/folders/1FSBcG9zNrkvDQb3eBO2O8fhRd2ZQLeds" target="_blank" rel="noopener"><span data-icon="download"></span>Download App</a><a class="button button-small button-secondary" data-link="dashboard" href="http://80.241.214.39:3000/" target="_blank" rel="noopener">Lihat Dashboard <span aria-hidden="true">↗</span></a></div>
+    <button class="menu-toggle" aria-label="Buka navigasi" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span></button>
+  </div>
+  <nav id="mobile-nav" class="mobile-nav" aria-label="Navigasi seluler" hidden><a href="#platform">Platform</a><a href="#android">Aplikasi Android</a><a href="#recommendation">Rekomendasi AI</a><a href="#dashboard">Dashboard</a><a href="kredit/">Kredit</a><div class="mobile-actions"><a class="button" data-link="downloadApp" href="https://drive.google.com/drive/folders/1FSBcG9zNrkvDQb3eBO2O8fhRd2ZQLeds" target="_blank" rel="noopener">Download App <span data-icon="download"></span></a><a class="button button-secondary" data-link="dashboard" href="http://80.241.214.39:3000/" target="_blank" rel="noopener">Lihat Dashboard <span aria-hidden="true">↗</span></a></div>
+</nav>
+</header>
+<main id="main">
+  <section class="hero" id="platform">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="status-dot"></span> A NEW PERSPECTIVE ON YOUR CITY</div>
+        <h1>Lihat kota.<br>Pahami <span>potensinya.</span></h1>
+        <p class="hero-description">Ubah foto dan video jalan menjadi wawasan tentang kualitas visual perkotaan. Dari survei di lapangan hingga skenario perbaikan, semuanya terhubung melalui AI.</p>
+        <div class="hero-actions"><a class="button" data-link="downloadApp" href="https://drive.google.com/drive/folders/1FSBcG9zNrkvDQb3eBO2O8fhRd2ZQLeds" target="_blank" rel="noopener"><span data-icon="download"></span>Download App</a><a class="button button-secondary" data-link="dashboard" href="http://80.241.214.39:3000/" target="_blank" rel="noopener">Lihat Dashboard <span aria-hidden="true">↗</span></a></div>
+        <div class="hero-note"><span class="mini-icon" data-icon="camera"></span><span>Satu ekosistem.<br><strong>Android di lapangan. Dashboard di meja kerja.</strong></span></div>
+      </div>
+      <div class="hero-visual hero-carousel" id="hero-carousel" role="region" aria-roledescription="carousel" aria-label="Contoh hasil segmentasi AI UrbanLens">
+        <div class="photo-heading"><span><i class="status-dot"></i> AI VISION · MALANG, INDONESIA</span><span id="hero-slide-counter">01 / 06</span></div>
+        <div class="hero-gallery-frame" id="hero-gallery-slides">
+          <!-- Gambar dan data slide dibaca dari config/site-config.js. -->
+        </div>
+        <div class="hero-slide-summary"><div><small>SEMANTIC SEGMENTATION</small><strong id="hero-slide-title">Koridor dengan kanopi pohon</strong></div>
+<span class="gallery-model">AI-Pipeline-V1</span></div>
+        <dl class="hero-slide-metrics"><div><dt>Vegetasi</dt><dd><span data-hero-value="0">50,2</span><em>%</em></dd></div>
+<div><dt>Langit</dt><dd><span data-hero-value="1">1,9</span><em>%</em></dd></div>
+<div><dt>Kendaraan</dt><dd><span data-hero-value="2">2,6</span><em>%</em></dd></div>
+<div><dt>Bangunan</dt><dd><span data-hero-value="3">11,8</span><em>%</em></dd></div>
+<div><dt>Trotoar</dt><dd><span data-hero-value="4">13,2</span><em>%</em></dd></div>
+<div><dt>Jalan</dt><dd><span data-hero-value="5">15,9</span><em>%</em></dd></div>
+</dl>
+        <div class="hero-slider-controls"><button type="button" class="hero-nav-button" id="hero-prev" aria-label="Gambar sebelumnya"><span aria-hidden="true">←</span></button><div class="hero-slider-dots" aria-label="Pilih gambar segmentasi"><button type="button" class="hero-dot is-active" data-hero-dot="0" aria-label="Tampilkan gambar 1: Koridor dengan kanopi pohon" aria-current="true"><span></span></button><button type="button" class="hero-dot" data-hero-dot="1" aria-label="Tampilkan gambar 2: Koridor komersial"><span></span></button><button type="button" class="hero-dot" data-hero-dot="2" aria-label="Tampilkan gambar 3: Ruang pejalan kaki"><span></span></button><button type="button" class="hero-dot" data-hero-dot="3" aria-label="Tampilkan gambar 4: Koridor bangunan institusi"><span></span></button><button type="button" class="hero-dot" data-hero-dot="4" aria-label="Tampilkan gambar 5: Trotoar di koridor hijau"><span></span></button><button type="button" class="hero-dot" data-hero-dot="5" aria-label="Tampilkan gambar 6: Aktivitas di koridor pertokoan"><span></span></button></div>
+<button type="button" class="hero-nav-button" id="hero-next" aria-label="Gambar berikutnya"><span aria-hidden="true">→</span></button><button type="button" class="hero-play-button" id="hero-autoplay" aria-label="Jeda pergantian otomatis" aria-pressed="false"><span aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg></span></button></div>
+        <div class="hero-gallery-foot"><span data-icon="scan"></span><span>Foto survei nyata. Wawasan visual berbasis AI.</span></div>
+<span class="sr-only" id="hero-slide-announcement" aria-live="polite" aria-atomic="true"></span>
+      </div>
+    </div>
+    <div class="container platform-strip"><div><span data-icon="smartphone"></span><p><strong>Android App</strong><small>Survei langsung dari lapangan</small></p>
+</div>
+<div><span data-icon="monitor"></span><p><strong>Web Dashboard</strong><small>Kelola, analisis, dan bandingkan</small></p>
+</div>
+<div><span data-icon="sparkles"></span><p><strong>AI Recommendation</strong><small>Jelajahi skenario perbaikan</small></p>
+</div>
+</div>
+  </section>
+
+  <section class="intro section container">
+    <div class="eyebrow">THE CITY, TRANSLATED INTO INSIGHT</div>
+    <div class="intro-grid"><h2>Yang terlihat di jalan.<br><span>Yang terbaca lewat data.</span></h2>
+<p>UrbanLens menyatukan dokumentasi visual, analisis AI, dan konteks lokasi. Pahami kondisi ruang kota, temukan area yang perlu ditinjau, dan bawa wawasan yang lebih jelas ke diskusi perencanaan.</p>
+</div>
+    <div class="workflow"><div><b>01</b><h3>Rekam</h3>
+<p>Ambil foto atau video melalui Android, lalu susun dalam proyek.</p>
+</div>
+<div><b>02</b><h3>Pahami</h3>
+<p>Baca segmentasi, UVI, serta prediksi beauty, safety, dan comfort.</p>
+</div>
+<div><b>03</b><h3>Eksplorasi</h3>
+<p>Bandingkan lokasi dan visualisasikan rekomendasi perbaikan AI.</p>
+</div>
+<div><b>04</b><h3>Bagikan</h3>
+<p>Bagikan laporan PDF dan ekspor dataset CSV untuk analisis lanjutan.</p>
+</div>
+</div>
+  </section>
+
+  <section class="android-section section" id="android">
+    <div class="container">
+      <div class="section-top"><div><div class="eyebrow">01 / THE CITY IN YOUR HANDS</div>
+<h2>Alat survei Anda.<br><span>Sekarang lebih cerdas.</span></h2>
+</div>
+<p>Bawa kekuatan AI ke lapangan. <br>Lima fitur Android untuk melihat, <br>merekam, dan memahami ruang kota.</p>
+</div>
+      <div class="android-grid">
+        <div class="phone-stage"><span class="stage-grid"></span><div class="stage-caption">URBANLENS / ANDROID EXPERIENCE</div>
+<div class="phone"><div class="phone-island"></div>
+<div class="phone-status"><span>09:41</span><span>● ▰</span></div>
+<div class="phone-content" id="phone-content"></div>
+<div class="phone-home"></div>
+</div>
+<div class="phone-float"><span data-icon="map-pin"></span><div><strong>Wawasan mulai dari sini.</strong><small>Di lokasi. Dalam konteks.</small></div>
+</div>
+<span class="stage-note">Ilustrasi antarmuka aplikasi</span></div>
+        <div class="android-features" aria-label="Fitur aplikasi Android">
+          <button class="feature active" data-feature="camera" aria-expanded="true"><span class="feature-number">01</span><span class="feature-copy"><strong>Real-time AI Camera</strong><span class="feature-description">Arahkan kamera ke lingkungan sekitar dan lihat analisis AI secara real-time saat melakukan survei.</span></span><span class="feature-plus">−</span></button>
+          <button class="feature" data-feature="segmentation" aria-expanded="false"><span class="feature-number">02</span><span class="feature-copy"><strong>Segmentation Foto & Video</strong><span class="feature-description">Identifikasi elemen visual pada foto dan rekaman video. Baca overlay segmentasi untuk memahami komposisi ruang kota.</span></span><span class="feature-plus">+</span></button>
+          <button class="feature" data-feature="projects" aria-expanded="false"><span class="feature-number">03</span><span class="feature-copy"><strong>Projects Folder Organizer</strong><span class="feature-description">Kelompokkan dokumentasi survei dalam folder proyek agar foto, video, dan hasil analisis tetap tertata.</span></span><span class="feature-plus">+</span></button>
+          <button class="feature" data-feature="heatmap" aria-expanded="false"><span class="feature-number">04</span><span class="feature-copy"><strong>Heatmap</strong><span class="feature-description">Lihat sebaran kualitas visual berdasarkan lokasi. Temukan pola antararea dan titik yang memerlukan peninjauan.</span></span><span class="feature-plus">+</span></button>
+          <button class="feature" data-feature="recommendation" aria-expanded="false"><span class="feature-number">05</span><span class="feature-copy"><strong>AI Recommendation</strong><span class="feature-description">Bandingkan foto sebelum–sesudah dan Original UVI dengan Predicted UVI untuk mengeksplorasi skenario penerapan saran AI.</span></span><span class="feature-plus">+</span></button>
+          <a class="text-link android-download" data-link="downloadApp" href="https://drive.google.com/drive/folders/1FSBcG9zNrkvDQb3eBO2O8fhRd2ZQLeds" target="_blank" rel="noopener"><span data-icon="download"></span> Download App <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="analysis-section section container" id="analysis">
+    <div class="analysis-grid"><div class="analysis-copy"><div class="eyebrow">02 / FROM PIXELS TO PERSPECTIVE</div>
+<h2>Lebih dari sebuah<br><span>skor visual.</span></h2>
+<p>Urban Visual Index (UVI) membantu membaca kualitas visual sebuah lingkungan. Lengkapi gambaran itu dengan prediksi keindahan, keamanan, kenyamanan, serta indikator komposisi visual.</p>
+<div class="quality-tags"><span><i data-icon="eye"></i>Beauty</span><span><i data-icon="shield"></i>Safety</span><span><i data-icon="leaf"></i>Comfort</span></div>
+<p class="small-note">Skor persepsi merupakan prediksi model terhadap citra. Gunakan bersama penilaian ahli dan konteks lapangan.</p>
+</div>
+<div class="analysis-panel"><div class="panel-eyebrow"><span>VISUAL COMPOSITION</span><span class="tiny-pill">Contoh hasil foto</span></div>
+<h3>Memahami elemen pembentuk ruang.</h3>
+<div class="metric"><span><i class="metric-dot vegetation"></i>Cakupan vegetasi</span><strong>30,8<span>%</span></strong><div><i style="width:30.8%;background:#00bfd8"></i></div>
+</div>
+<div class="metric"><span><i class="metric-dot sky"></i>Keterbukaan langit</span><strong>14,6<span>%</span></strong><div><i style="width:14.6%;background:#56a9cd"></i></div>
+</div>
+<div class="metric"><span><i class="metric-dot building"></i>Keterlihatan bangunan</span><strong>12,7<span>%</span></strong><div><i style="width:12.7%;background:#42779c"></i></div>
+</div>
+<div class="metric"><span><i class="metric-dot pavement"></i>Trotoar</span><strong>4,5<span>%</span></strong><div><i style="width:4.5%;background:#244d73"></i></div>
+</div>
+<div class="analysis-bottom"><span data-icon="chart"></span><p>Baca juga aksesibilitas permukaan, dominasi visual, serta faktor pengaruh UVI pada dashboard.</p>
+</div>
+</div>
+</div>
+  </section>
+
+  <section class="recommendation-section section" id="recommendation">
+    <div class="container">
+      <div class="section-top"><div><div class="eyebrow">03 / IMAGINE WHAT COMES NEXT</div>
+<h2>Dari kondisi hari ini,<br><span>ke kemungkinan yang lebih baik.</span></h2>
+</div>
+<div class="ai-label"><span data-icon="sparkles"></span> AI-ASSISTED URBAN SCENARIOS</div>
+</div>
+      <div class="recommendation-grid">
+        <div class="comparison-column"><div class="comparison-bar"><span><span data-icon="move"></span> Geser untuk membandingkan</span><span>Contoh foto · Malang</span></div>
+<div class="comparison" id="comparison"><div class="source-photo original"></div>
+<div class="source-photo after after-layer"></div>
+<span class="comparison-label before-label">Sebelum</span><span class="comparison-label after-label">Sesudah · Konsep AI</span><div class="comparison-line"><span>‹ ›</span></div>
+<input id="compare-range" type="range" min="0" max="100" value="50" aria-label="Perbandingan foto sebelum dan sesudah rekomendasi AI" aria-valuetext="50 persen foto asli, 50 persen konsep AI"></div>
+<div class="comparison-actions"><button data-compare="100">Lihat foto asli</button><span aria-hidden="true">↔</span><button data-compare="0">Lihat konsep AI</button></div>
+</div>
+        <div class="recommendation-copy"><span class="pill">AI RECOMMENDATION</span><h3>Lihat sarannya.<br>Bayangkan dampaknya.</h3>
+<p>Terjemahkan analisis menjadi diagnosis, saran perbaikan, dan visualisasi foto sesudah penerapan rekomendasi.</p>
+<ul class="check-list"><li><span data-icon="check"></span>Foto asli vs visualisasi redesign AI</li><li><span data-icon="check"></span>Diagnosis dan rekomendasi sesuai konteks foto</li><li><span data-icon="check"></span>Original UVI vs Predicted UVI dalam skenario</li></ul><div class="uvi-comparison"><div><small>ORIGINAL UVI</small><strong>5,8<em>/10</em></strong><span>Kondisi foto awal</span></div>
+<span class="uvi-arrow" aria-hidden="true">→</span><div><small>PREDICTED UVI</small><strong>7,2<em>/10</em></strong><span>Ilustrasi skenario</span></div>
+</div>
+<p class="scenario-note"><span data-icon="info"></span><span>Nilai prediksi 7,2 pada demo ini adalah ilustrasi fitur. Visualisasi dan skor prediksi merupakan estimasi AI; hasil penerapan perlu divalidasi di lapangan.</span></p>
+</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="spatial-section section container" id="heatmap">
+    <div class="spatial-grid"><div class="spatial-copy"><div class="eyebrow">04 / THE BIGGER PICTURE</div>
+<h2>Satu foto memberi detail.<br><span>Peta menunjukkan pola.</span></h2>
+<p>Hubungkan hasil analisis dengan lokasinya melalui Peta Panas UVI. Tinjau persebaran kualitas visual dan bandingkan koridor dalam konteks proyek Anda.</p>
+<div class="spatial-options"><button class="active" data-map-mode="heatmap" aria-pressed="true"><span data-icon="map"></span>Heatmap UVI</button><button data-map-mode="points" aria-pressed="false"><span data-icon="map-pin"></span>Titik survei</button></div>
+<div class="selected-location" aria-live="polite"><span data-icon="map-pin"></span><div><small>LOKASI TERPILIH</small><strong id="map-location">Kayutangan, Malang</strong><p id="map-location-copy">Eksplorasi kualitas visual koridor heritage.</p>
+</div>
+</div>
+<p class="small-note">Ilustrasi sebaran titik untuk memperlihatkan alur eksplorasi peta.</p>
+</div>
+<div class="map-card"><div class="map-card-header"><span data-icon="map"></span><strong>Malang · Urban visual landscape</strong><span class="tiny-pill">Preview interaktif</span></div>
+<div class="city-map" id="city-map"><svg class="map-base" viewBox="0 0 620 490" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="blocks" width="76" height="64" patternTransform="rotate(-19)" patternUnits="userSpaceOnUse"><rect width="76" height="64" fill="#dceaf1"/><rect x="9" y="9" width="56" height="44" rx="4" fill="#eaf3f7"/><path d="M0 61H76M73 0V64" stroke="#fff" stroke-width="6"/></pattern><filter id="blur"><feGaussianBlur stdDeviation="22"/></filter></defs><rect width="620" height="490" fill="url(#blocks)"/><path d="M420-30C370 90 540 170 443 278S404 415 535 520" stroke="#aed3e0" stroke-width="35" fill="none"/><path d="M-40 328 664 96M146-50 310 530" stroke="#fff" stroke-width="28"/><path d="M-40 328 664 96M146-50 310 530" stroke="#bddbe5" stroke-width="2" fill="none"/><path d="m-20 120 280 92 370 195" stroke="#fff" stroke-width="13" fill="none"/><path d="M70 52 118 143 210 121 168 30ZM423 324 366 365 390 456 470 423Z" fill="#b0d4e0"/><g class="map-heat" filter="url(#blur)" opacity=".75"><circle cx="260" cy="210" r="60" fill="#00bfd8"/><circle cx="163" cy="337" r="54" fill="#64c8dc"/><circle cx="421" cy="141" r="50" fill="#047895"/><circle cx="359" cy="368" r="42" fill="#1aa0c6"/></g></svg><span class="map-street s1">Jl. Basuki Rahmat</span><span class="map-street s2">Jl. Ijen</span><span class="map-street s3">KLOJEN</span><button class="map-pin pin-one active" data-location="Kayutangan, Malang" data-location-copy="Eksplorasi kualitas visual koridor heritage." aria-label="Pilih Kayutangan, Malang"><i></i><span>Kayutangan</span></button><button class="map-pin pin-two" data-location="Ijen Boulevard, Malang" data-location-copy="Tinjau komposisi vegetasi dan ruang pejalan kaki." aria-label="Pilih Ijen Boulevard, Malang"><i></i><span>Ijen Boulevard</span></button><button class="map-pin pin-three" data-location="Soekarno Hatta, Malang" data-location-copy="Baca pola visual koridor komersial dan ruang jalannya." aria-label="Pilih Soekarno Hatta, Malang"><i></i><span>Soekarno Hatta</span></button><span class="map-north">N ↑</span><div class="map-key"><span>UVI lebih rendah</span><i></i><span>Lebih tinggi</span></div>
+</div>
+</div>
+</div>
+  </section>
+
+  <section class="dashboard-section section" id="dashboard">
+    <div class="container"><div class="section-top"><div><div class="eyebrow">05 / YOUR CONNECTED WORKSPACE</div>
+<h2>Seluruh proyek.<br><span>Satu ruang kendali.</span></h2>
+</div>
+<p>Admin dashboard menghubungkan data survei, <br>analisis AI, insight spasial, dan pelaporan. <br>Jelajahi seluruh 15 menu di bawah ini.</p>
+</div>
+      <figure class="dashboard-preview dashboard-product-shot"><div class="dashboard-shot-heading"><span class="dashboard-shot-brand"><span data-icon="monitor"></span> URBANLENS AI / ADMIN DASHBOARD</span><a class="text-link" data-link="dashboard" href="http://80.241.214.39:3000/" target="_blank" rel="noopener">Lihat Dashboard <span aria-hidden="true">↗</span></a></div>
+<a class="dashboard-shot-link" data-link="dashboard" href="http://80.241.214.39:3000/" target="_blank" rel="noopener" aria-label="Buka dashboard UrbanLens"><img data-image="dashboard" alt="Tampilan dashboard UrbanLens: sidebar navigasi, kartu ringkasan proyek, Peta Panas UVI, dan daftar proyek terbaru" width="1348" height="846" loading="lazy"></a><figcaption>Ringkasan Dasbor · Proyek, data visual, dan analisis perkotaan dalam satu ruang kerja.<span class="dashboard-mobile-hint">Geser gambar untuk melihat tampilan lengkap ↔</span></figcaption>
+</figure>
+      <div class="module-heading"><p><span class="status-dot"></span> FITUR & MENU ADMIN DASHBOARD</p>
+<span>Pilih menu untuk membaca penjelasan ↓</span></div>
+<div class="module-grid" id="module-grid"></div>
+<div class="preview-detail dashboard-module-detail" aria-live="polite"><div><span id="preview-group" class="eyebrow">RINGKASAN</span><h3 id="preview-name">Dasbor</h3>
+</div>
+<p id="preview-description">Pantau ringkasan proyek, pustaka visual, status analisis, serta peta UVI dalam satu tampilan.</p>
+<a id="preview-link" class="text-link" data-link="dashboard" href="http://80.241.214.39:3000/" target="_blank" rel="noopener">Buka menu di dashboard <span aria-hidden="true">↗</span></a></div>
+    </div>
+  </section>
+
+  <section class="audience-section section container"><div class="eyebrow">BUILT FOR PEOPLE WHO SHAPE PLACES</div>
+<div class="intro-grid"><h2>Perspektif baru untuk<br><span>ruang yang kita bagi.</span></h2>
+<p>Untuk tim yang memerlukan dokumentasi dan analisis visual yang tertata dalam proses riset, desain, dan evaluasi kawasan.</p>
+</div>
+<div class="audience-grid"><article><span data-icon="building"></span><h3>Arsitek & perencana kota</h3>
+<p>Pahami karakter kawasan dan eksplorasi arah perbaikan ruang publik.</p>
+</article>
+<article><span data-icon="graduation"></span><h3>Peneliti & akademisi</h3>
+<p>Susun dokumentasi visual, bandingkan hasil, dan ekspor data penelitian.</p>
+</article>
+<article><span data-icon="briefcase"></span><h3>Konsultan & pengembang</h3>
+<p>Bawa konteks lingkungan visual ke dalam kajian dan diskusi proyek.</p>
+</article>
+</div>
+<div class="human-note"><span data-icon="sparkles"></span><p><strong>AI membaca pola. Anda memberi makna.</strong><br>UrbanLens mendukung penilaian profesional dengan bukti visual dan analisis yang dapat ditinjau.</p>
+</div>
+</section>
+
+
+
+  <section class="faq-section container"><div><div class="eyebrow">A LITTLE MORE CLARITY</div>
+<h2>Hal yang mungkin<br><span>ingin Anda tahu.</span></h2>
+</div>
+<div class="faq-list"><details><summary>Apa perbedaan aplikasi Android dan dashboard?<span>+</span></summary><p>Android mendukung pengambilan data dan eksplorasi AI di lapangan. Web dashboard menjadi ruang kerja untuk mengelola proyek, pustaka foto dan video, analisis, peta, perbandingan koridor, serta laporan.</p>
+</details>
+<details><summary>Apakah UrbanLens dapat menganalisis video?<span>+</span></summary><p>Ya. Selain foto, UrbanLens mendukung segmentasi video untuk membaca elemen visual lingkungan. Pustaka Video pada dashboard membantu mengelola dokumentasi rekaman survei Anda.</p>
+</details>
+<details><summary>Apakah Predicted UVI menjamin hasil perbaikan?<span>+</span></summary><p>Predicted UVI menunjukkan estimasi kualitas visual untuk skenario penerapan rekomendasi AI. Foto sesudah adalah visualisasi konsep. Penilaian ahli, analisis ulang, dan validasi lapangan diperlukan untuk menilai hasil implementasi.</p>
+</details>
+<details><summary>Bisakah hasil analisis diunduh?<span>+</span></summary><p>Dashboard menyediakan Laporan Eksekutif yang dapat dicetak atau disimpan sebagai PDF. Menu Ekspor Data menyediakan Export CSV untuk dataset, serta JSON untuk pengolahan data lanjutan.</p>
+</details>
+</div>
+</section>
+
+  <section class="cta-section"><div class="container cta-inner"><div class="eyebrow">YOUR CITY. A CLEARER PERSPECTIVE.</div>
+<h2>Kota yang lebih baik<br>dimulai dari <span>pemahaman.</span></h2>
+<p>Temukan apa yang bisa diceritakan data visual tentang kawasan Anda.</p>
+<div class="cta-actions"><a class="button button-light" data-link="downloadApp" href="https://drive.google.com/drive/folders/1FSBcG9zNrkvDQb3eBO2O8fhRd2ZQLeds" target="_blank" rel="noopener"><span data-icon="download"></span>Download App</a><a class="button button-outline-light" data-link="dashboard" href="http://80.241.214.39:3000/" target="_blank" rel="noopener">Lihat Dashboard <span aria-hidden="true">↗</span></a></div>
+<div class="cta-orbit" aria-hidden="true"></div>
+</div>
+</section>
+</main>
+<footer class="footer"><div class="container"><div class="footer-top"><a class="brand" href="#"><span class="brand-mark official-mark" aria-hidden="true"></span><span>UrbanLens<span class="brand-ai">AI</span><small>URBAN VISUAL INTELLIGENCE</small></span></a><p>Hasil kerja sama Fakultas Teknik Universitas Brawijaya<br>dengan PT Wolftagon Future Innovation.</p>
+<a class="text-link" href="#main">Kembali ke atas ↑</a></div>
+<div class="footer-bottom"><span>© 2026 UrbanLens AI. All rights reserved.</span><span>See the city. Measure the city. Improve the city.</span></div>
+</div>
+</footer>
+</body>
+</html>
