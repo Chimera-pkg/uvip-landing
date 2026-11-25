@@ -6,7 +6,7 @@
 // dashboardMenuUrls dapat diisi dengan pasangan "slug-menu": "https://...".
 window.URBANLENS_CONFIG = {
   "links": {
-    "downloadApp": "https://drive.google.com/drive/folders/1FSBcG9zNrkvDQb3eBO2O8fhRd2ZQLeds",
+    "downloadApp": "https://drive.usercontent.google.com/download?id=1FaVUmsAkrgoZ7eoAjcF-ULNqCDydGl-U&export=download&authuser=0&confirm=t&uuid=ca76d94a-cbc8-4f8f-9d96-abbefc432b98&at=AMrWOn3Ttu2fDbVxcloOS-5RmEqc%3A1795575779242",
     "dashboard": "https://admin.urbanlens.id/"
   },
   "dashboardMenuUrls": {},
