@@ -7,7 +7,7 @@
 window.URBANLENS_CONFIG = {
   "links": {
     "downloadApp": "https://drive.google.com/drive/folders/1FSBcG9zNrkvDQb3eBO2O8fhRd2ZQLeds",
-    "dashboard": "http://80.241.214.39:3000/"
+    "dashboard": "https://admin.urbanlens.id/"
   },
   "dashboardMenuUrls": {},
   "images": {
